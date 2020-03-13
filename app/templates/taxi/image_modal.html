@@ -1,0 +1,11 @@
+<div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img src="data:image/jpg;base64,{{ img }}"/>
+    <div id="caption"></div>
+</div>
+<script>
+    $(window).on("load", function (e){
+        $('#imageModal').modal('show');
+    });
+</script>
+

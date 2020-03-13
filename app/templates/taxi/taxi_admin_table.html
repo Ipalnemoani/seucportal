@@ -1,0 +1,87 @@
+
+
+    <tbody id='taxi-tbody' style="font-family: Helvetica Neue, Helvetica, Arial,sans-serif; font-size: 14px;", data-page="{{page}}">
+        {% if taxi_requests %}
+        {% for request in taxi_requests %}
+        <tr data-row="{{request.id}}">
+            <td data-label="Knox ID">{{request.employee.knox_id}}</td>
+            <td data-label="Taxi">{{request.taxi_company}}</td>
+            <td data-label="Ticket №">{{request.ticket_n}}</td>
+            <td data-label="Trip Date">{{request.dateoftrip}}</td>
+            <td data-label="Trip Time">{{request.timeoftrip}}</td>
+            <td data-label="Reason">{{request.reason}}</td>
+            <td data-label="Destination">
+                <a type="button" class="btn btn-success" id="destination" data-toggle="popover" data-trigger="hover" data-placement="bottom" rel="popover" data-content="<div><b>Destination:</b><br>{{ request.destination }} <br><br><b>Comment:</b><br> {{ request.description }}</div>" style="color:#000; background-color: #fff; border-color: #fff;">
+                    <i class="fas fa-map-marked-alt"> Trip</i>
+                </a>
+            </td>
+            <td data-label="Approval">
+
+                {% if not request.approval_data %}
+                    <a disabled type="button" class="btn btn-success" id="approval-file" data-toggle="popover" data-trigger="hover" data-placement="bottom" rel="tooltip" data-content="Approval File does not exist!" title="<b>Download Approval File</b>" style="color:#1a80b6; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-file-download"> Link</i>
+                    </a>
+                {% else %}
+                    <a type="button" class="btn btn-success" id="approval-file" data-toggle="popover" name={{request.approval_data.approval_name}} data-row="{{request.approval_data.id}}" data-trigger="hover" title="<b>Download Approval File</b>" data-placement="bottom" rel="popover" data-content="<div>{{ request.approval_data.approval_original_name }}</div>" style="color:#1a80b6; background-color: #fff; border-color: #fff;" onclick="get_file($(this).attr('name'), $(this).attr('data-row'))">
+                        <i class="fas fa-file-download"> Link</i>
+                    </a>
+                {% endif %}
+            </td>
+            <td data-label="Expense">{{request.expance}}</td>
+
+            <td data-label="Status">
+                {% if request.status %}
+                    <a type="button" class="btn btn-success" id="status-btn-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Your trip was Confirmed!" style="color:seagreen; background-color: #fff; border-color: #fff;" onclick="change_status('{{request.id}}', 0)">
+                        <i class="fas fa-clipboard-check" id="status-i-{{request.id}}"> Confirm</i>
+                    </a>
+                {% else %}
+                    <a type="button" class="btn btn-success" id="status-btn-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Trip Confirmation in Progress!" style="color:#ffb802; background-color: #fff; border-color: #fff;" onclick="change_status('{{request.id}}', 1)">
+                        <i class="fas fa-tasks" id='status-i-{{request.id}}'> In Progress</i>
+                    </a>
+                {% endif %}
+            </td>
+
+            <td data-label="Note" id="note-col">
+                {% if not request.status %}
+                <div class="dropdown show" id="dropdown-note-{{request.id}}" style="height: 22px;">
+                    <a class="btn btn-secondary dropdown-toggle data-changes" name="attention" href="#" role="button" id="edit-button-{{request.id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-toggle-second="tooltip" data-placement="left" title="Click to Change Notes ( {{request.admin_comment}} )" >
+                        <i class="fas" id="fas-{{request.id}}">{{request.admin_comment}}</i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="
+                    width: 280px;">
+                            <h4 class="dropdown-header"><b>Input Notes for Employee</b></h4>
+                            <i class="new-value fas fa-edit"></i>
+                            <input type="search" class="dropdown-item" id="edit-input-{{request.id}}" value="{{request.admin_comment}}" autofocus onfocus=""/>
+                            <div class="dropdown-divider" style="
+                            margin: 20px;">
+                            <button class="dropdown-item btn btn-light" id="editConfirm" onclick="editConfirm('edit-input-{{request.id}}', 'edit-button-{{request.id}}', '{{request.id}}')"><i class="fas fa-check" style="color: green;"> Confirm</i></button>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+            </td>
+
+            <td data-label="Action">
+                {% if request.status %}
+                    <a disabled href="#" type="button" class="btn btn-success" data-row={{request.id}} id="email-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Trip was Confirmed! Sending Email Not Possible!" style="color:#000; background-color: #fff; border-color: #fff;">
+                            <i class="fas fa-envelope-open-text"> Send Note </i>
+                    </a>
+                {% elif not request.email %}
+                    <a disabled href="#" type="button" class="btn btn-success" data-row={{request.id}} id="email-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Employee dont have Email Adress" style="color:#000; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-envelope-open-text"> Send Note </i>
+                    </a>
+                {% elif not request.admin_comment %}
+                    <a disabled href="#" type="button" class="btn btn-success" data-row={{request.id}} id="email-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Note is empty! To send email, please, add Note!" style="color:#000; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-envelope-open-text"> Send Note </i>
+                    </a>
+                {% else %}
+                    <a href="#" type="button" class="btn btn-success" data-row={{request.id}} id="email-{{request.id}}" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Send Email Notify to Employee" style="color:#000; background-color: #fff; border-color: #fff;" onclick="notifyEmail('{{request.id}}')">
+                        <i class="fas fa-envelope-open-text"> Send Note </i>
+                    </a>
+                {% endif %}
+            </td>
+        <tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>

@@ -1,0 +1,66 @@
+
+    {% if taxi_data %}
+    <tbody id='taxi-tbody' style="font-family: Helvetica Neue, Helvetica, Arial,sans-serif; font-size: 14px;", data-page="{{page}}">
+        {% for row in taxi_data %}
+        <tr data-row="{{row['id']}}">
+            <td data-label="Date">{{row['datenow']}}</td>
+            <td data-label="Taxi">{{row['taxi_company']}}</td>
+            <td data-label="Ticket №">{{row['ticket_n']}}</td>
+            <td data-label="Trip Date">{{row['dateoftrip']}}</td>
+            <td data-label="Trip Time">{{row['timeoftrip']}}</td>
+            <td data-label="Reason">{{row['reason']}}</td>
+            <td data-label="Destination">
+                <a type="button" class="btn btn-success" id="destination" data-toggle="popover" data-trigger="hover" data-placement="bottom" rel="popover" data-content="<div><b>Destination:</b><br>{{ row['destination'] }} <br><br><b>Comment:</b><br> {{ row['description'] }}</div>" style="color:#000; background-color: #fff; border-color: #fff;">
+                    <i class="fas fa-map-marked-alt"> Trip</i>
+                </a>
+            </td>
+            <td data-label="Approval">
+
+                {% if not row['approval_data'] %}
+                    <a disabled type="button" class="btn btn-success approval-btn" id="approval-file-{{row['approval_data']['id']}}" data-toggle="popover" data-trigger="hover" data-placement="bottom" rel="tooltip" data-content="Approval File does not exist!" title="<b>Download Approval File</b>" style="color:#1a80b6; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-file-download"> Link</i>
+                    </a>
+                {% else %}
+                    <a type="button" class="btn btn-success approval-btn" id="approval-file-{{row['approval_data']['id']}}" data-toggle="popover" name="{{row['approval_data']['name']}}" data-row="{{row['approval_data']['id']}}" data-trigger="hover" title="<b>Download Approval File</b>" data-placement="bottom" rel="popover" data-content="<div>{{ row['approval_data']['original'] }}</div>" style="color:#1a80b6; background-color: #fff; border-color: #fff;" >
+                        <i class="fas fa-file-download"> Link</i>
+                    </a>
+                {% endif %}
+            </td>
+            <td data-label="Expense">{{row['expance']}}</td>
+            <td data-label="Status">
+                {% if row['status'] %}
+                    <a type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Your trip was Confirmed!" style="color:seagreen; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-clipboard-check"> Confirm</i>
+                    </a>
+                {% else %}
+                    <a type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Trip Confirmation in Progress!" style="color:#ffb802; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-tasks"> In Progress</i>
+                    </a>
+                {% endif %}
+            </td>
+
+            <td data-label="Action">
+                {% if row['status'] %}
+                    <a disabled href="#" type="button" class="btn btn-success" data-row="{{row['id']}}" id="edit" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Edit information in Request" style="color:#000; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-edit"> Edit</i>
+                    </a>
+                {% else %}
+                    <a href="#" type="button" class="btn btn-success" data-row="{{row['id']}}" id="edit" data-toggle="tooltip" data-placement="bottom" rel="tooltip" title="Edit information in Request" style="color:#000; background-color: #fff; border-color: #fff;" onclick="edit_request($(this).attr('data-row'), '{{page}}')">
+                        <i class="fas fa-edit"> Edit</i>
+                    </a>
+                {% endif %}
+            </td>
+
+            <td data-label="Attention">
+                {% if row['admin_comment'] %}
+                    <a href="#" type="button" class="btn btn-success" value="{{row['id']}}" id="edit" data-trigger="hover" data-toggle="popover" data-placement="bottom" rel="popover"
+                    title="<b>Administrator Comment:</b>" data-content="<div>{{ row['admin_comment'] }}</div>" style="color:darkred; background-color: #fff; border-color: #fff;">
+                        <i class="fas fa-comment"> Note</i>
+                    </a>
+                {% endif %}
+            </td>
+        <tr>
+        {% endfor %}
+    </tbody>
+
+    {% endif %}

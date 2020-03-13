@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/Time_Attendance_Icon.png') }}">
+{% endblock %}
+
+{% block app_content %}
+    <div class="container text-center" role="main">
+        {% include 'twelve-hour-clock.html' %}
+        <div class='underconst' style="text-align:left; margin:2em">
+            
+            <h1><strong>Hello, {{ current_user.full_name }}!</strong></h1>
+            <h1><strong>Welcome to SEUC Portal!</strong></h1>
+        </div>
+        <div class="weather" style="text-align: left; margin:1.5em">
+        <iframe id="forecast_embed" frameborder="0" height="245" width="75%" src="//forecast.io/embed/#lat=50.4501&lon=30.5241&name=Kyiv, Ukraine&units=si"></iframe>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{%block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loginmodal.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/login.png') }}">
+
+<!-- Modal HTML -->
+<div id="myModal" class="modal fade" data-backdrop="static">
+        <div class="modal-dialog modal-login">
+          <div class="modal-content">
+            <div class="modal-header">
+              <div class="avatar">
+                <img src="../static/img/avatar.png" alt="Avatar">
+              </div>
+              
+              <h4 class="modal-title"><img src="../static/img/SamsOrigWordmark_cr.png" width=90% style="padding:5%"><br>Portal</h4>	
+                      <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+            </div>
+            <div class="modal-body">
+              <form action="" method="post">
+                <div class="form-group">
+                  <i class="fa fa-user"></i>
+                  <input type="text" class="form-control" name="username" placeholder="Windows Login" required="required">		
+                </div>
+                <div class="form-group">
+                  <i class="fa fa-lock"></i>
+                  <input type="password" class="form-control" name="password" placeholder="Windows Password" required="required">	
+                </div>        
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary btn-lg btn-block login-btn">Login</button>
+                </div>
+              </form>
+              <div id="myAlert" style="width: auto">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert {{category}} alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h5 class="alert-heading" style="text-align: center"><strong>{{ message.split('\n')[0] }}</strong></h5>
+                        <p style="text-align: center">{{ message.split('\n')[1] }}</p>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <img src="../static/img/DWYC_horiz_wht_RGB.png" width=50%/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+      $(window).on("load", function (e){
+        $('#myModal').modal('show');
+         });
+        </script>
+        <script>
+            $(window).on("submit", function (e){
+              $('#myModal').modal('hide').on('hidden.bs.modal', function (e) {
+                $('#exampleModalCenter').modal('show').delay(3000);
+                $(this).off('hidden.bs.modal');
+               });
+              });
+          </script>
+
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-backdrop="static" aria-hidden="true">
+          <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle"><strong>Login to SEUC Portal</strong></h3>
+                <h5 class="modal-title" id="exampleModalLongTitle">Wait, please...</h5>
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>-->
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="d-flex align-items-center">
+                      <!--<strong>Loading...</strong>-->
+                      <i class="fas fa-compact-disc fa-pulse fa-2x" style="font-size:48px"></i>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                  <img src="../static/img/samsungblue-logo_2x_cr.png" width=35%/>
+                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      <br>
+{% endblock %}

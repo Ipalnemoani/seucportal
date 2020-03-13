@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/Uber-512.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/taxipage.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/taxi_modal_image.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-clockpicker.min.css') }}">
+<style>
+        .col-sm-2.sidenav{
+            width: 2.5% !important;
+        }
+        .col-sm-8.text-left{
+            width: 95% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block head_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/sweetalert.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/aes.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/jquery.twbsPagination.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/jquery.twbsPagination.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/bootstrap-clockpicker.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/taxi.js') }}" type="text/javascript" ></script>
+{% endblock %}
+
+{% block app_content %}
+
+    <div class="page-header">
+        <h1><strong>Taxi Requests Management</strong></h1>
+    </div>
+    <div class="container theme-showcase" role="main">
+        <div id="myAlert" style="width: auto">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{category}} alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="alert-heading" style="text-align: center"><strong>{{ message.split('\n')[0] }}</strong></h5>
+                    <p style="text-align: center">{{ message.split('\n')[1] }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        </div>
+        <div class="page-description" style="display:inline-block; width:100%; position: relative">
+            <div class="desc" style="display:block; float: left;">
+                <h3>Register your trip by Corporate Taxi.</h3>
+                <p>Please click on <b>"Create Request"</b> button and fill the data.</p>
+            </div>
+            <div class="desc" style="display:block; float: right; bottom: 0; right: 0;">
+                <table id="action_table_taxi">
+                    <form action = "{{ url_for('taxi') }}" method = "GET" style="margin: 0px;">
+                        <tbody>
+                            <tr>
+                                {% if current_user.admin %}
+                                <th><a id="admin-taxi-button" href="/taxi/adminpanel" type="button" class="btn btn-light" value="Administrator" style="margin-top: 45px;">
+                                    <i class="fas fa-users-cog"> Administrator</i>
+                                    </a>
+                                </th>
+                                {% endif %}
+                                <th><a id="create_submit_button" type="button" class="btn btn-success" value="Create Request" style="margin-top: 45px;">
+                                    <i class="fas fa-plus-circle"> Create Request</i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </form>
+                </table>
+            </div>
+        </div>
+        <div class = "table-responsive" style="margin-top: 5px; min-height: 400px;">
+            <table class="surveys-table table table-striped table-hover" data-search="true" style="width:100%; table-layout: auto">
+                <!--<caption>Your Last Trips</caption>-->
+                <thead class="thead-dark">
+                    <tr>
+                        <!--<th scope="col">#</th>-->
+                        <th scope="col" style="width: 90px;">Date</th>
+                        <th scope="col" style="width: 100px;">Taxi</th>
+                        <th scope="col" >Ticket №</th>
+                        <th scope="col" style="width: 90px;">Trip Date</th>
+                        <th scope="col" style="width: 90px;">Trip Time</th>
+                        <th scope="col" >Reason</th>
+                        <th scope="col" >Route</th>
+                        <th scope="col" >Approval</th>
+                        <th scope="col" >Expense</th>
+                        <th scope="col" style="width: 120px;">Status</th>
+                        <th scope="col" style="width: 100px;">Action</th>
+                        <th scope="col" >Attention</th>
+                    </tr>
+                </thead>
+                <tbody id=taxi-tbody>
+                </tbody>
+            </table>
+            <nav class="survey_pagination" aria-label="Page navigation">
+                <ul class="pagination" id="taxi-pagination">
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="modal fade" id="taxiModal" tabindex="-1" role="dialog" aria-labelledby="taxiModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="modal-content-div">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="taxiModalLongTitle"><strong><i class="fas fa-taxi"></i> Your Taxi Request</strong></h3>
+                </div>
+                <form class="form-horizontal" action="{{ url_for('taxi') }}" method="POST" enctype="multipart/form-data" id="create-trip">
+                <div class="modal-body">
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="check_group_1">
+                                    <i class="fas fa-car"></i>
+                                    Taxi company:<spam style="color:red">*</spam>
+                                </label>
+                            </div>
+                            <div class="checkbox-group" id="check_group_1">
+                                {% for vendor in taxi_vendors %}
+                                    <div class="radio-inline">
+                                        <input type="radio" value="{{vendor.taxi_name}}" name="taxi-company" id={{vendor.taxi_name}} class="checkradio">
+                                        <label for={{vendor.taxi_name}} class="checklabel">{{vendor.taxi_name}}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group" id="ticket">
+                            <div class="col-sm-3 control-label">
+                                <label for="ticket-number">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    Ticket number:<spam style="color:red">*</spam>
+                                </label>
+                            </div>
+                            <div class="col-sm-2" >
+                                <input type="text" class="form-control float-input" id="ticket-number" placeholder="Enter Ticket Number" name="ticket-number" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="date">
+                                    <i class="fas fa-calendar-day"></i>
+                                    Date of Trip:
+                                </label>
+                            </div>
+                            <div class="col-sm-2" >
+                                <input type="text" class="form-control float-input date-trip" placeholder="Select Date of Trip" name="date" autocomplete="off" required onkeypress="return false;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label" for="time">
+                                <label for="time">
+                                <i class="fas fa-clock"></i>
+                                Time of Trip:
+                                </label>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group clockpicker" style="width: 47.5%; float: left">
+                                    <input type="text" id="start-time-trip" name="start-time-trip" class="form-control" value="00:00">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                                <div class="input-group clockpicker" style="width: 47.5%; float: right">
+                                    <input type="text" id="end-time-trip" name="end-time-trip" class="form-control" value="00:00">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="reason">
+                                    <i class="fas fa-briefcase"></i>
+                                    Reason:
+                                </label>
+                            </div>
+                            <div class="col-sm-2" style="width: 70%;">
+                                <select class="form-control float-input" name="reason" id="reason">
+                                    {% for reason in trip_reasons %}
+                                        <option>{{reason.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="destination">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    Destination:
+                                </label>
+                            </div>
+                            <div class="col-sm-2"  style="text-align: right;">
+                                <input type="text" class="form-control float-input" id="destination" placeholder="Lva Tolstoho Str., 57 - Sosninykh Str., 7" name="destination">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="expanse">
+                                    <i class="fas fa-hryvnia"></i>
+                                    Expanse:
+                                </label>
+                            </div>
+                            <div class="col-sm-2" >
+                                <input type="number" class="form-control float-input" id="expanse" placeholder="100.00" name="expanse">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="comment">
+                                    <i class="fas fa-comment-alt"></i>
+                                    Comment:
+                                </label>
+                            </div>
+                            <div class="col-sm-2" >
+                                <textarea class="form-control float-input" rows="3" name="comment" id="comment" placeholder="Input Additional Comment if Needs" style="resize: none"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">
+                                <label for="approval">
+                                    <i class="fas fa-file-upload"></i>
+                                    Approval:
+                                </label>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="btn btn-block btn-default">
+                                        <span id="approval-label">Choose the Approval File(s)&hellip;</span>
+                                        <input type="file" style="display: none;" id="approval" name="approval" accept="{{fext}}" onchange="input_request_approval(this)">
+                                </label>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" name="create_request" id="create_request" disabled="true">Create</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="modal-content-div">
+
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <img class="image-content" src="data:image/jpg;base64,{{ img }}" id="approval-image"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="mhtModal" tabindex="-1" role="dialog" aria-labelledby="mhtModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="modal-content-div">
+
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <iframe class="image-content" src="" id="approval-mht"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editTaxiModal" tabindex="-1" role="dialog" aria-labelledby="editTaxiModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="modal-content-div">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="editTaxiModalLongTitle"><strong><i class="fas fa-taxi"></i> Edit Taxi Request</strong></h3>
+                </div>
+                <form class="form-horizontal" action="{{ url_for('edit_request') }}" method="POST" enctype="multipart/form-data" id="edit-request-form">
+                    <div class="modal-body" id="edit-modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" name="edit-request" id="edit-request" onclick="save_edit_request()">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#taxi-pagination').twbsPagination({
+            totalPages: "{{ totalpages }}",
+            visiblePages: 10,
+            onPageClick: function(event, page){
+                $.get("/taxi", {'page': page, 'pagination': 1}, function(data)
+                {
+                    var res = JSON.parse(JSON.stringify(data))
+                    var taxitable = document.getElementById('taxi-tbody')
+                    console.log(res)
+                    if (res.phtml) {
+                        taxitable.outerHTML = res.phtml
+                    }
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip({animation: true});
+                    });
+
+                    $(document).ready(function(){
+                        $('[data-toggle="popover"]').popover({container: 'body',
+                            html: "true",
+                        });
+                    });
+
+                });
+        }});
+
+        $('#create_submit_button').on("click", function (e){
+            $('#taxiModal').modal('show')
+        });
+
+        $('#taxiModal').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+            $('span[id="approval-label"]')[0].innerText = "Choose the Approval File(s)...";
+            $("#create_request").prop( "disabled", true );
+        });
+
+        $('input[name="taxi-company"]').on("click", function (e){
+            $("#create_request").prop( "disabled", false );
+            if ($('input[name=taxi-company]:checked').val() == "UKLON") {
+                $("#ticket-number").removeAttr('required');
+                $("#ticket").prop( "hidden", true );
+            } else {
+                $("#ticket-number").prop( "required", true );
+                $("#ticket").prop( "hidden", false );
+            }
+        });
+
+        $('.search-date').one('change', function() {
+            console.log($(this))
+        })
+
+
+        $('.clockpicker').clockpicker({
+            placement: 'bottom',
+            align: 'left',
+            donetext: 'Done',
+            autoclose: 'true'
+        });
+
+
+    </script>
+
+{% endblock %}

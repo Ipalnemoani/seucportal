@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/Uber-512.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/taxipage.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/taxi_modal_image.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-clockpicker.min.css') }}">
+<style>
+    .col-sm-2.sidenav{
+        width: 2.5% !important;
+    }
+    .col-sm-8.text-left{
+        width: 95% !important;
+    }
+</style>
+{% endblock %}
+
+{% block head_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/sweetalert.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/aes.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/jquery.twbsPagination.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/jquery.twbsPagination.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/bootstrap-clockpicker.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}" type="text/javascript" ></script>
+<script src="{{ url_for('static', filename='js/taxi.js') }}" type="text/javascript" ></script>
+{% endblock %}
+
+{% block app_content %}
+    <div class="page-header">
+        <h1><strong>Taxi Requests Admin Panel</strong></h1>
+    </div>
+    <div class="container theme-showcase" role="main">
+        <div class="page-description" style="display:inline-block; width:100%; position: relative">
+            <div class="desc" style="display:block; float: left;">
+                    <h3>Manage employee trips on Corporate Taxi.</h3>
+                    <p>Use filters to select data:</p>
+            </div>
+            <div class="desc" style="display:block; float: right; bottom: 0; right: 0;">
+                <table id="action_table_taxi">
+                    <form action = "{{ url_for('taxi') }}" method = "GET" style="margin: 0px;">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    <input class="search-data search-employee" type="text" placeholder="Search by KNOX ID" id="knox-id" name="knox-id" editable="true" style="margin-top: 53px;" oninput="$('#apply_filter_button, #remove_filter_button').removeAttr('disabled')"/>
+                                </th>
+                                <th>
+                                    <input class="search-data search-employee" type="text" placeholder="Search by Tiket" id="ticket-number-admin" name="ticket-number-admin" editable="true" style="margin-top: 53px;" oninput="$('#apply_filter_button, #remove_filter_button').removeAttr('disabled')"/>
+                                </th>
+                                <th>
+                                    <input class="start-date search-data search-date date-trip" type="text" placeholder="Start Trip Date" id="start-date" name="start-date" editable="false" autocomplete="off" style="margin-top: 53px;" onkeypress="return false;" onchange="$('#apply_filter_button, #remove_filter_button').removeAttr('disabled')"/>
+                                </th>
+                                <th>
+                                    <input class="end-date search-data search-date date-trip" type="text" placeholder="End Trip Date" id="end-date" name="end-date" editable="false" autocomplete="off" style="margin-top: 53px;" onkeypress="return false;" onchange="$('#apply_filter_button, #remove_filter_button').removeAttr('disabled')"/>
+                                </th>
+                                <th><a id="apply_filter_button" type="button" class="btn btn-primary btn-menu" value="Apply Filters" style="margin-top: 45px;" onclick="get_filters_data()" disabled>
+                                        <i class="fas fa-filter"></i>
+                                        Apply Filters
+                                    </a>
+                                </th>
+                                <th><a id="remove_filter_button" type="button" class="btn btn-dark btn-menu" value="Remove Filters" style="margin-top: 45px; background-color: black; color: white" onclick="removeFilters()" disabled>
+                                        <i class="fas fa-eraser"></i>
+                                         Clear Filters
+                                    </a>
+                                </th>
+                                <th><a id="refresh_filter_button" type="button" class="btn btn-light" data-toggle="tooltip" data-placement="top" rel="tooltip" title="Refresh Table" value="Refresh Filters" style="margin-top: 45px; background-color: white; color: black; border: solid 0.5px black" onclick="removeFilters()">
+                                        <i class="fas fa-sync"></i>
+                                    </a>
+                                </th>
+                                <th><a id="download_filter_button" type="button" class="btn btn-light" data-toggle="tooltip" data-placement="top" rel="tooltip" title="Download Excel" value="Download" style="margin-top: 45px; background-color: white; color: black; border: solid 0.5px green" >
+                                        <i class="fas fa-file-excel" style="color:green"></i>
+                                    </a>
+                                </th>
+                                <th><a id="statistic_filter_button" type="button" class="btn btn-light" data-toggle="tooltip" data-placement="top" rel="tooltip" title="Taxi Statistic" value="Statistic" style="margin-top: 45px; background-color: white; color: black; border: solid 0.5px darkred" >
+                                        <i class="fas fa-chart-bar" style="color:darkred"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </form>
+                </table>
+            </div>
+        </div>
+        <div class = "table-responsive" style="margin-top: 5px; min-height: 400px;">
+            <table class="surveys-table table table-striped table-hover" data-search="true" style="width:100%; table-layout: auto">
+                <!--<caption>Your Last Trips</caption>-->
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Knox ID</th>
+                        <th scope="col">Taxi</th>
+                        <th scope="col">Ticket №</th>
+                        <th scope="col">Trip Date</th>
+                        <th scope="col">Trip Time</th>
+                        <th scope="col">Reason</th>
+                        <th scope="col">Route</th>
+                        <th scope="col">Approval</th>
+                        <th scope="col">Expense</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Note</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id=taxi-tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="9999">
+                            <nav class="survey_pagination" aria-label="Page navigation">
+                                <ul class="pagination" id="taxi-pagination">
+                                </ul>
+                            </nav>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="modal-content-div">
+
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <img class="image-content" src="data:image/jpg;base64,{{ img }}" id="approval-image"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="statisticModal" tabindex="-1" role="dialog" aria-labelledby="statisticModal" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-wide" role="document" style="width: 80%">
+            <div class="modal-content" id="modal-stat-content-div">
+                    <!--<div class="modal-footer" style="padding: 10px;">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>-->
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#taxi-pagination').twbsPagination({
+            totalPages: "{{totalpages}}",
+            visiblePages: 10,
+            prev: "Prev",
+            onPageClick: function(event, page){
+                console.log(page)
+                var name = $('#knox-id')[0].value
+                var ticket = $('#ticket-number-admin')[0].value
+                var sdate = $('#start-date.start-date')[0].value
+                var edate = $('#end-date.end-date')[0].value
+
+                $.get("/taxi/adminpanel", {'page':page, 'name':name, 'ticket':ticket, 'sdate':sdate, 'edate':edate, 'pagination':1}, function(data)
+                {
+                    var res = JSON.parse(JSON.stringify(data))
+                    var taxitable = document.getElementById('taxi-tbody')
+                    console.log(res)
+                    if (res.phtml) {
+                        taxitable.outerHTML = res.phtml
+                    }
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip({animation: true});
+                    });
+
+                    $(document).ready(function(){
+                        $('[data-toggle="popover"]').popover({container: 'body',
+                            html: "true",
+                        });
+                    });
+
+                    $('.dropdown-menu').on('click', function(event){
+                        // The event won't be propagated up to the document NODE and
+                        // therefore delegated events won't be fired
+                        event.stopPropagation();
+                    });
+                });
+            }});
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+<!-- Don't forget the "|safe"! -->
+<div class="modal-content" id="modal-stat-content-div">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title" id="statisticModalLongTitle" style="line-height: 0; font-size: 20px;"><strong><i class="fas fa-chart-pie"></i> Taxi Statistic | Period: {{sdate}} / {{edate}}</strong></h3>
+    </div>
+    <div class="modal-body" id="stat-modal-body" style="background-color: #FFF; padding: 5px;">
+        <style>
+            div.chart:hover {
+            -webkit-transform: scale(1.02);
+            transform: scale(1.02);
+            box-shadow: 0 4px 28px 0 rgba(0,0,0,.42);
+        }
+        </style>
+        <table style="width: 100%">
+            <tbody>
+            <tr>
+                <!-- <td style='width: 200px;'>
+                </td>-->
+                <td style="padding: 2px;">
+                    <div id="chart" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                        <embed type="image/svg+xml" src= "{{ chart|safe }}" />
+                    </div>
+                </td>
+                <td style="padding: 2px;">
+                    <div id="chartline" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                        <embed type="image/svg+xml" src= "{{ chartline|safe }}" />
+                    </div>
+                </td>
+                
+            </tr>
+            <tr>
+                <!--<td style='width: 200px;'>
+                </td>-->
+                <td style="padding: 2px;">
+                    <div id="reasonpie" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                        <embed type="image/svg+xml" src= "{{ reasonchart|safe }}" />
+                    </div>
+                </td>
+                <td style="padding: 2px;">
+                    <div id="reason_uah" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                            <embed type="image/svg+xml" src= "{{ reason_uah|safe }}" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <!--<td style='width: 200px;'>
+                </td>-->
+                <td style="padding: 2px;">
+                    <div id="barchart" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                        <embed type="image/svg+xml" src= "{{ barchart|safe }}" />
+                    </div>
+                </td>
+                <td style="padding: 2px;">
+                    <div id="barchart" class="chart" style="box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);">
+                        <embed type="image/svg+xml" src= "{{ barcostchart|safe }}" />
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

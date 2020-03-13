@@ -1,0 +1,64 @@
+#imageModal.modal{
+    background-color: rgba(0,0,0,0.5);
+}
+
+#imageModal>.modal-backdrop.in {
+    opacity: 0.5 !important;
+  }
+
+#imageModal .modal-body{
+    padding: 0px;
+}
+
+.image-content {
+    margin: auto;
+    display: block;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  /* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+  }
+  
+  /* The Close Button */
+.close {
+    position: absolute;
+    top: 0px;
+    right: -50px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#date:read-only{
+  background: #fff;
+}
+
+#statisticModal.modal {
+  background-color: #333;
+}
+
+#statisticModal>.modal-backdrop.in {
+  opacity: 0.3 !important;
+}
+
+.swal-button:focus {
+  padding: 7px 19px;
+  box-shadow: 0 0 0 0 #fff, 0 0 0 0 rgba(43,114,165,.29);
+}

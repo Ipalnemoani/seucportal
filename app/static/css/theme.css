@@ -1,0 +1,209 @@
+html, body {
+  margin: 0px;
+  background-color: #fff;
+  color: #000; /*#454f57*/
+  height: 100%;
+  width: 100%;
+  min-width: 330px;
+  min-height: 100%;
+}
+
+.page-header{
+  margin: 0;
+}
+
+.container {
+  width: auto;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.container-fluid.text-center, .row.content{
+  height: 100%;
+  width: 100%;
+  margin-bottom: 15px;
+  display: inline-table;
+}
+.navbar-nav {
+  font-size: 13px;
+  font-family: "Malgun Gothic","맑은 고딕","Segoe UI WPC","Gulim","굴림",sans-serif;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+.navbar-inverse {
+  border-color: #fff;
+}
+
+#topheader .navbar-nav li > a {
+  width: auto;
+  text-align: center;
+	text-transform: capitalize;
+	color: rgb(180, 180, 180);
+	transition: background-color .2s, color .2s;
+}
+
+#topheader .navbar-nav li:hover > a, .navbar-nav li:focus > a{
+		background-color: #fff;
+    color: #000;
+    box-shadow: 0 7px 16px 0 rgba(0, 0, 0, 0.24), 0 1px 5px 0 rgba(0, 0, 0, 0.19);
+  }
+
+#topheader .navbar-nav li.open > a, .navbar-nav li:hover, .navbar-nav li:focus-within{
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);
+  }
+
+#topheader .navbar-nav li.active > a {
+	background-color: #fff;
+  color: #000;
+  /* box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19); */
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+  text-align: center;
+}
+
+.theme-showcase .container {
+  text-align: center;
+  width: auto;
+}
+
+.jumbotron{
+  width: 200px;
+  color: #fff;
+  text-align: center;
+  background-color: #202020;
+  box-shadow: 0 10px 50px 0 rgba(0, 0, 0,0.24), 0 -20px 50px 0 rgba(0, 0, 0,0.19);
+}
+
+#topheader a.navbar-brand {
+  text-align: center;
+  width: 130px;
+  color: #fff;
+  position: relative;
+}
+
+#topheader a.navbar-brand#brandname {
+
+  width: 110px;
+
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #8fb3b4;
+  border-color: #8fb3b4;
+}
+
+.btn-success:hover, .btn-success:focus {
+  color: #fff;
+  background-color: #307774;
+  border-color: #307774;
+  box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 17px 50px 0 rgba(0, 0, 0,0.19);
+}
+
+.btn-danger:hover, .btn-danger:focus{
+  box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 17px 50px 0 rgba(0, 0, 0,0.19);
+}
+
+.dropdown-menu:focus-within {
+  background: #fff;
+}
+.dropdown-menu {
+  box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);
+}
+
+#topheader .navbar-nav .dropdown-menu li > a{
+  color: #000;
+  font-weight: bold;
+  text-align: left;
+  width: auto;
+}
+
+#topheader .navbar-nav .dropdown-menu li:hover > a{
+  color: #fff;
+  font-weight: bold;
+  background-color: #8fb3b4;
+}
+
+ul li:hover > ul,
+ul li:focus-within > ul,
+ul li ul:hover,
+ul li ul:focus {
+   visibility: visible;
+   opacity: 1;
+   display: block;
+}
+
+
+#usertab {
+   width: auto !important;
+ }
+
+.popover{
+  color: black;
+  max-width: none !important;
+  width: auto !important;
+  padding: 0px;
+  margin: 0px;
+  box-shadow: 0 10px 50px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);
+}
+
+@media (max-width: 988px) {
+  .navbar-header {
+      float: none;
+  }
+  .navbar-left,.navbar-right {
+      float: none !important;
+  }
+  .navbar-toggle {
+      display: block;
+  }
+  .navbar-collapse {
+      border-top: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+  }
+  .navbar-fixed-top {
+  top: 0;
+  border-width: 0 0 1px;
+}
+  .navbar-collapse.collapse {
+      display: none!important;
+  }
+  .navbar-nav {
+      float: none!important;
+  margin-top: 7.5px;
+}
+.navbar-nav>li {
+      float: none;
+  }
+  .navbar-nav>li>a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+  .collapse.in{
+    display:block !important;
+}
+}
+
+.col-sm-2.sidenav{
+  width: 15%;
+}
+
+.col-sm-8.text-left{
+  height: 100%;
+  width: 70%;
+  /*box-shadow: 0 7px 16px 0 rgba(0, 0, 0,0.24), 0 1px 5px 0 rgba(0, 0, 0,0.19);*/
+}
+
+#topheader a.navbar-brand img {
+  width: 100%;
+  margin-top: 2px;
+}
+
+footer{
+  text-align: center;
+}

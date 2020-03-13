@@ -1,0 +1,147 @@
+
+<div class="modal-body" id="edit-modal-body">
+    <div class="form-group" id="taxi">
+        <div class="col-sm-3 control-label">
+            <label for="taxi-company">
+                <i class="fas fa-car"></i>
+                Taxi Company:
+            </label>
+        </div>
+        <div class="col-sm-2" >
+            <input type="text" class="form-control float-input" id="taxi-company" value="{{request_data['taxi_company']}}" name="taxi-company" readonly>
+        </div>
+    </div>
+    {% if request_data['taxi_company'] != 'UKLON' %}
+    <div class="form-group" id="ticket">
+    {% else %}
+    <div class="form-group" id="ticket" hidden>
+    {% endif %}
+        <div class="col-sm-3 control-label">
+            <label for="ticket-number">
+                <i class="fas fa-ticket-alt"></i>
+                Ticket number:
+            </label>
+        </div>
+        <div class="col-sm-2" >
+            {% if request_data['ticket_n'] %}
+                <input type="text" class="form-control float-input" id="ticket-number" value="{{request_data['ticket_n']}}" name="ticket-number">
+            {% else %}
+                <input type="text" class="form-control float-input" id="ticket-number" value='' name="ticket-number">
+            {% endif %}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="date">
+                <i class="fas fa-calendar-day"></i>
+                Date of Trip:
+            </label>
+        </div>
+        <div class="col-sm-2" >
+            <input type="text" class="form-control float-input date-trip" value="{{request_data['dateoftrip']}}" name="date" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label" for="time">
+            <label for="time">
+            <i class="fas fa-clock"></i>
+            Time of Trip:
+            </label>
+        </div>
+        <div class="col-sm-2">
+            <div class="input-group clockpicker" style="width: 47.5%; float: left">
+                <input type="text" id="start-time-trip" name="start-time-trip" class="form-control" value="{{request_data['timeoftrip'].split('-')[0]}}">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time"></span>
+                </span>
+            </div>
+            <div class="input-group clockpicker" style="width: 47.5%; float: right">
+                <input type="text" id="end-time-trip" name="end-time-trip" class="form-control" value="{{request_data['timeoftrip'].split('-')[1]}}">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="reason">
+                <i class="fas fa-briefcase"></i>
+                Reason:
+            </label>
+        </div>
+        <div class="col-sm-2" style="width: 70%;">
+            <select class="form-control float-input" name="reason" id="reason">
+                {% for reason in trip_reasons %}
+                    {% if reason.name != request_data['reason'] %}
+                        <option>{{reason.name}}</option>
+                    {% else %}
+                        <option selected>{{reason.name}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="destination">
+                <i class="fas fa-map-marked-alt"></i>
+                Destination:
+            </label>
+        </div>
+        <div class="col-sm-2"  style="text-align: right;">
+            <input type="text" class="form-control float-input" id="destination" value="{{request_data['destination']}}" name="destination">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="expanse">
+                <i class="fas fa-hryvnia"></i>
+                Expanse:
+            </label>
+        </div>
+        <div class="col-sm-2" >
+            <input type="number" class="form-control float-input" id="expanse" value="{{request_data['expance']}}" name="expanse">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="comment">
+                <i class="fas fa-comment-alt"></i>
+                Comment:
+            </label>
+        </div>
+        <div class="col-sm-2" >
+            <textarea class="form-control float-input" rows="3" name="comment" id="comment" style="resize: none">{{request_data['description']}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label">
+            <label for="approval">
+                <i class="fas fa-file-upload"></i>
+                Approval:
+            </label>
+        </div>
+        <div class="col-sm-2">
+            <label class="btn btn-block btn-default">
+                {% if request_data['approval_data'] %}
+                    {% if request_data['approval_data']['original'] | count >= 40 %}
+                        <span id="edit-approval-label">{{request_data['approval_data']['original'][:40]}}&hellip;</span>
+                    {% else %}
+                        <span id="edit-approval-label">{{request_data['approval_data']['original']}}</span>
+                    {% endif %}
+                {% else %}
+                    <span id="edit-approval-label">Choose the Approval File(s)&hellip;</span>
+                {% endif %}
+                <input type="file" style="display: none;" id="edit-approval" name="edit-approval" data-row="{{request_data['approval_data']['id']}}" accept="{{fext}}" onchange="input_request_approval(this)">
+                {% if request_data['approval_data']['id'] %}
+                    <input type="text" style="display: none;" id="edit-approval-row" name="edit-approval_row" value="{{request_data['approval_data']['id']}}" hidden>
+                {% else %}
+                    <input type="text" style="display: none;" id="edit-approval-row" name="edit-approval_row" value="" hidden>
+                {% endif %}
+            </label>
+        </div>
+    </div>
+    <input type="text" style="display: none;" id="edit-request-row" name="edit-request-row" value="{{req_id}}" hidden>
+    <input type="text" style="display: none;" id="edit-request-page" name="edit-request-page" value="{{page}}" hidden>
+</div>
